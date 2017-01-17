@@ -1,7 +1,7 @@
 {
-  "name": "smarthome-demo",
+  "name": "SmartHome-Demo",
   "version": "0.1.0",
-  "description": "JavaScript implementation of client and various OCF servers",
+  "description": "IoT to Cloud SmartHome Demo",
   "repository": "https://github.com/01org/SmartHome-Demo",
   "main": "index.js",
   "keywords": [
@@ -15,6 +15,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "iot-rest-api-server": "^0.2.0",
     "iotivity-node": "^1.2.0-1",
     "express": "*",
     "websocket": "*",

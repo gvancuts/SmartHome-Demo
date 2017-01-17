@@ -26,3 +26,10 @@ Node.js dependencies can be installed using `npm install <node_module>` (you nee
     node gateway/gateway-server.js -r # Start server with rules engine only.
 ```
 
+## Docker container startup script
+The [`start-smarthome-in-docker.sh`](./start-smarthome-in-docker.sh) script is used when building a Docker container that emulates a SmartHome, providing the following services and elements:
+* Home Gateway SW: the core is provided by the content of this folder and started by the [`gateway-server.js`](./gateway-server.js) script.
+* [IoT REST API Server](https://github.com/01org/iot-rest-api-server): this is the service that exposes OIC (OCF) API over HTTP(S)
+* IoT Smart Devices: these are simulated devices implemented by the scripts in the `ocf-servers/js-servers/` folder. All scripts accept the `-s` (or `--simulation`) argument that forces them to start in simulation mode, this is what we use when running in a Docker container.
+
+For more details, please take a look at the top-level [Dockerfile](../Dockerfile).
