@@ -22,7 +22,10 @@ var device = require('iotivity-node'),
     tiltPercentage = 0,
     lcd1 = 'Solar Connected!!',
     lcd2 = '',
-    simulationTimerId = null, noObservers = false, simulationMode = false, updatePos = 0,
+    simulationTimerId = null,
+    noObservers = false,
+    simulationMode = false,
+    updatePos = 0,
     exitId,
     observerCount = 0,
     solarProperties = {};
@@ -97,29 +100,38 @@ function map(x, in_min, in_max, out_min, out_max) {
 }
 
 function updateSolarPanel(tiltPos, locationInfo, percentage) {
-    if (tiltPos)
-        tiltPercentage = tiltPos;
 
-    if (!mraa)
-        return;
+    if (simulationMode) {
+        if (tiltPos)
+            tiltPercentage = tiltPos;
 
-    var val = map(tiltPercentage, 0, 100, .05, .10);
-    debuglog('Update received. tiltPercentage: ', tiltPercentage);
-    pwmPin.write(val);
+        if (locationInfo)
+            lcd1 = locationInfo;
 
-    if (!lcd)
-        return;
+        if (percentage)
+            lcd2 = percentage;
+    } else {
+        if (!mraa)
+            return;
 
-    if (locationInfo) {
-        lcd1 = locationInfo;
-        lcdPin.setCursor(0, 0);
-        lcdPin.write(lcd1);
-    }
+        var val = map(tiltPercentage, 0, 100, .05, .10);
+        debuglog('Update received. tiltPercentage: ', tiltPercentage);
+        pwmPin.write(val);
 
-    if (percentage) {
-        lcd2 = percentage;
-        lcdPin.setCursor(1, 0);
-        lcdPin.write(lcd2);
+        if (!lcd)
+            return;
+
+        if (locationInfo) {
+            lcd1 = locationInfo;
+            lcdPin.setCursor(0, 0);
+            lcdPin.write(lcd1);
+        }
+
+        if (percentage) {
+            lcd2 = percentage;
+            lcdPin.setCursor(1, 0);
+            lcdPin.write(lcd2);
+        }
     }
 }
 
@@ -187,6 +199,22 @@ function updateProperties(properties) {
 // This function construct the payload and returns when
 // the GET request received from the client.
 function getProperties() {
+
+    if (simulationMode) {
+        if (isNaN(solarProperties.tiltPercentage))
+            solarProperties.tiltPercentage = 0;
+
+        solarProperties.lcd1 = new Date();
+        var locationInfo;
+        if (solarProperties.lcd2)
+           locationInfo = properties.lcd2.split(' ')[1];
+
+        if (locationInfo && typeof locationInfo === 'string')
+            solarProperties.locationInfo = locationInfo;
+        else
+            solarProperties.locationInfo = 'Europe/Helsinki';
+    }
+
     // Format the payload.
     var properties = {
         rt: resourceTypeName,
@@ -288,6 +316,11 @@ if (device.device.uuid) {
             // Add event handlers for each supported request type
             resource.onretrieve(retrieveHandler);
             resource.onupdate(updateHandler);
+
+            if (simulationMode) {
+                debuglog('Starting simulationMode...');
+                startSimulation();
+            }
         },
         function(error) {
             debuglog('register() resource failed with: ', error);
