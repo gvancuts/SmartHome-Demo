@@ -87,5 +87,14 @@ The (alleged, not verified yet) advantage of running with the `--network host` p
 
 *Note:* this uses plain HTTP. It is possible to use HTTPS by modifying the [startup script](gateway/start-smarthome-in-docker.sh) and passing the `-s` parameter to the `iot-rest-api-server` startup script.
 
+By default, the [startup script](ocf-servers/start-ocf-servers-in-docker.sh) starts all the OCF servers. In order to selectively start some of the OCF servers, follow the steps below:
+**1.** Make a copy of the `ocf-servers/ocf-server.conf.template` file and renamed it to `ocf-servers/ocf-server.conf`
+**2.** Configure `ocf-servers/ocf-server.conf` adhere to the formats in the template. Put the OCF server name in the 1st column and the total number of the specified server type in the 2nd column. If the configuration file format is not compliant or it does not exist in the same directory of the script file, the [startup script](ocf-servers/start-ocf-servers-in-docker.sh) skips parsing and starts all OCF servers instead.
+**3.** Share the configuration file on the host with the container process    
+```
+$ docker run -v <path/to/ocf-server.conf/on/host>:/opt/SmartHome-Demo/ocf-servers/ocf-server.conf smarthome-sensors:v1
+```
+*Note*: use the absolute path instead of relative path to point to the configuration file on the host server. 
+
 [IoT REST API Server]: https://github.com/01org/iot-rest-api-server/
 [OCF]: https://openconnectivity.org/
