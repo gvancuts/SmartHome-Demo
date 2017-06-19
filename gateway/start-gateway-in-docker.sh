@@ -23,7 +23,7 @@ echo "This container IP address is: `hostname -i`"
 export NODE_PATH=/opt/SmartHome-Demo/gateway/node_modules/
 
 # Start the Home Gateway
-/usr/bin/node /opt/SmartHome-Demo/gateway/gateway-server.js -r &
+/usr/bin/nodejs /opt/SmartHome-Demo/gateway/gateway-server.js -r &
 sleep 0.2
 
 # Start IoT REST API server
@@ -64,7 +64,7 @@ else
 fi
 
 # We blindly pass all container command-line arguments to the IoT REST API Server
-/usr/bin/node /opt/SmartHome-Demo/gateway/node_modules/iot-rest-api-server/index.js "$@" &
+/usr/bin/nodejs /opt/SmartHome-Demo/gateway/node_modules/iot-rest-api-server/index.js "$@" &
 
 keepgoing=true
 

@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM ubuntu:16.04
+FROM debian:jessie
 
 # Allows to set-up HTTP(S) proxy using '--build-arg'
 ARG http_proxy
@@ -30,7 +30,7 @@ RUN echo $http_proxy
 RUN apt-get update
 RUN apt-get install -y \
     build-essential git scons libtool autoconf \
-    valgrind doxygen wget unzip
+    valgrind doxygen wget unzip curl
 
 # Install IoTivity build dependencies
 RUN apt-get install -y \
@@ -39,7 +39,10 @@ RUN apt-get install -y \
     libcurl4-gnutls-dev
 
 # Install npm, nodejs
-RUN apt-get install -y npm nodejs-legacy
+# the node.js package in Debian Jessie official repositories is too
+# old for iotivity-node (> 0.10 required and 0.10.29 provided)
+RUN curl -sL https://deb.nodesource.com/setup_6.x | /bin/bash -
+RUN apt-get install -y nodejs
 
 # Intall Home Gateway server
 RUN mkdir -p /opt/SmartHome-Demo/gateway/

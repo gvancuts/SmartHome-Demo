@@ -52,7 +52,7 @@ then
                     echo "...Starting $ocf_server_name server..."
                     if [ "$i" == "1" ];
                     then 
-                        /usr/bin/node "$OCF_DIR/$ocf_server_name.js" -s &
+                        /usr/bin/nodejs "$OCF_DIR/$ocf_server_name.js" -s &
                     else
                         # create a new ocf server file
                         \cp -fR $OCF_DIR/$ocf_server_name.js $OCF_DIR/$ocf_server_name$i.js
@@ -60,7 +60,7 @@ then
                         sed -i "s#\(resourceInterfaceName\s*=\s*\).*#\1${rt}#" $OCF_DIR/$ocf_server_name$i.js
                         if [ $? -eq 0 ]; 
                         then
-                            /usr/bin/node "$OCF_DIR/$ocf_server_name$i.js" -s &
+                            /usr/bin/nodejs "$OCF_DIR/$ocf_server_name$i.js" -s &
                         else
                             parse_error=1
                             break
@@ -82,7 +82,7 @@ then
     echo "The configuration file was incorrect or not found. Starting all OCF servers (default)."
     for file in `ls -1 $OCF_DIR/*.js`
     do
-	    /usr/bin/node $file -s &
+	    /usr/bin/nodejs $file -s &
 	    sleep 0.2
     done
 fi
